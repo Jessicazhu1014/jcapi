@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            background-image: url('bg.jpg');
+            background-size: cover;
+        }
+
+        .colors {
+            display: flex;
+            gap: 10px;
+        }
+
+        .color-box {
+            width: 70px;
+            height: 40px;
+            border: solid 2px white;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            border-radius: 8px;
+        }
+
+        #darkred {
+            background-color: #890706;
+        }
+
+        #scarlet {
+            background-color: #fc2d14;
+        }
+
+        #crimson {
+            background-color: #d91d3f;
+        }
+
+        #skyblue {
+            background-color: #8bcdea;
+        }
+
+        #navyblue {
+            background-color: #13007f;
+        }
+
+        #teal {
+            background-color: #137f80;
+        }
+
+        .container {
+            width: 488px;
+            height: 400px;
+            border: solid 2px white;
+            margin-top: 10px;
+            background-color: rgba(255, 255, 255, 0.585);
+            display: flex;
+        }
+        .left, .right{
+            width: 50%;
+            height: 100%;
+        }
+
+        main {
+            position: relative;
+            margin: 30px;
+        }
+
+        .result {
+            position: absolute;
+            right: 20%;
+            top: 40px;
+            width: 300px;
+            height: 200px;
+            color: white;
+        }
+        .topic {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        button {
+            border: none;
+            background: white;
+            padding: 6px 14px;
+            margin-top: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 3px 3px 4px #5e97af;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="colors">
+            <div class="color-box" id="darkred" draggable="true">darkred</div>
+            <div class="color-box" id="scarlet" draggable="true">scarlet</div>
+            <div class="color-box " id="crimson" draggable="true">crimson</div>
+            <div class="color-box " id="skyblue" draggable="true">skyblue</div>
+            <div class="color-box " id="navyblue" draggable="true">navyblue</div>
+            <div class="color-box " id="teal" draggable="true">teal</div>
+        </div>
+        <div class="container">
+            <div class="left"></div>
+            <div class="right"></div>
+        </div>
+        <div>
+            <button onclick="clearBg()">Clear</button>
+        </div>
+
+        <div class="result">
+            <div class="topic"></div>
+            <div class="details"></div>
+        </div>
+    </main>
+
+    <script>
+        let selectColors = []
+        const colorBoxs = document.querySelectorAll('.color-box');
+        colorBoxs.forEach((colorBox) => {
+            colorBox.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', e.target.id);
+            });
+        });
+
+
+        const container = document.querySelector('.container');
+        const leftDiv = document.querySelector('.left');
+        const rightDiv = document.querySelector('.right');
+        container.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        container.addEventListener('drop', (e) => {
+            e.preventDefault();
+
+            const colorName = e.dataTransfer.getData('text/plain');
+            selectColors.push(colorName)
+
+            if(selectColors.length === 1) {
+                leftDiv.style.backgroundColor = convertColor(selectColors[0])
+                rightDiv.style.backgroundColor = convertColor(selectColors[0])
+                getSingleData(selectColors[0])
+            }else if(selectColors.length === 2){
+                leftDiv.style.backgroundColor = convertColor(selectColors[0])
+                rightDiv.style.backgroundColor = convertColor(selectColors[1])
+                getCombinationData(selectColors[0], selectColors[1])
+            }
+
+            // container.appendChild(draggedElement);
+        });
+
+        const red = ['darkred', 'scarlet', 'crimson']
+        const blue = ['skyblue', 'navyblue', 'teal']
+        function convertColor(name) {
+            if (name === 'darkred') {
+                return '#890706'
+            } else if (name === 'scarlet') {
+                return '#fc2d14'
+            } else if (name === 'crimson') {
+                return '#d91d3f'
+            } else if (name === 'skyblue') {
+                return '#8bcdea'
+            } else if (name === 'navyblue') {
+                return '#13007f'
+            } else if (name === 'teal') {
+                return '#137f80'
+            }
+        }
+
+        function getSingleData(color) {
+            if (red.includes(color)) {
+                fetch('/red/' + color).then(response => response.json()).then(showResult)
+            } else if (blue.includes(color)) {
+                fetch('/blue?blue=' + color).then(response => response.json()).then(showResult)
+            }
+
+        }
+        function getCombinationData(color1,color2) {
+            let redColor = 'NA',blueColor = 'NA'
+            if(red.includes(color1)) {
+                redColor = color1
+            } else if(blue.includes(color1)){
+                blueColor = color1
+            }
+            if(red.includes(color2)) {
+                redColor = color2
+            } else if(blue.includes(color2)){
+                blueColor = color2
+            }
+            fetch('/combination/' + redColor + '/' + blueColor).then(response => response.json()).then(showResult)
+        }
+
+        function showResult(data) {
+            if(data.error) {
+                alert(data.error)
+                clearBg()
+                return
+            }
+
+            document.querySelector('.topic').innerHTML = data.topic
+            document.querySelector('.details').innerHTML = data.details
+        }
+
+        function clearBg(){
+            selectColors = []
+            leftDiv.style.backgroundColor = 'initial'
+            rightDiv.style.backgroundColor = 'initial'
+            document.querySelector('.topic').innerHTML = ''
+            document.querySelector('.details').innerHTML = ''
+        }
+    </script>
+</body>
+
+</html>

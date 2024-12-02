@@ -1,0 +1,41 @@
+{
+    "red": {
+      "darkred": {
+        "topic": "industrial buildings",
+        "details": "Jersey City is known for its historical industrial buildings, which played a key role in early manufacturing."
+      },
+      "scarlet": {
+        "topic": "history of Jersey City",
+        "details": "Jersey City has a rich history, beginning in the early 1600s..."
+      },
+      "crimson": {
+        "topic": "city influences",
+        "details": "Various activities have influenced Jersey City, including..."
+      }
+    },
+    "blue": {
+      "skyblue": {
+        "topic": "Hudson River",
+        "details": "The Hudson River has been a central part of Jersey City's landscape..."
+      },
+      "navyblue": {
+        "topic": "maritime history",
+        "details": "Jersey City has a strong maritime history due to its strategic location on the Hudson."
+      },
+      "teal": {
+        "topic": "waterfront developments",
+        "details": "Recent waterfront developments have transformed Jersey City into a bustling hub."
+      }
+    },
+    "combination": {
+      "darkred_navyblue": {
+        "topic": "WWII impact",
+        "details": "During WWII, Jersey City played a critical role in the nation's defense..."
+      },
+      "crimson_skyblue": {
+        "topic": "art and architecture",
+        "details": "The growth of Jersey City is reflected in its artistic and architectural developments."
+      }
+    }
+  }
+  
